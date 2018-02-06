@@ -8,8 +8,6 @@ require '../src/handlers/exceptions.php';
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
-header("Access-Control-Allow-Origin: http://geoquizz.kojuri.com");
-
 $config = include('../src/config.php');
 
 $app = new \Slim\App(['settings'=> $config]);
@@ -26,8 +24,16 @@ $capsule->getContainer()->singleton(
   App\Exceptions\Handler::class
 );
 
-$app->get('/photos[/]', function($request, $response) {
-    return $response->getBody()->write(Photo::all()->toJson());
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+});
+
+$app->add(function ($req, $res, $next) {
+    $response = $next($req, $res);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
 $app->post('/start[/]', function($request, $response, $args) {
@@ -119,6 +125,13 @@ $app->post('/end/{token}[/]', function($request, $response, $args) {
     else{
         return $response->withStatus(403);
     }
+});
+
+// Catch-all route to serve a 404 Not Found page if none of the routes match
+// NOTE: make sure this route is defined last
+$app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
+    $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
+    return $handler($req, $res);
 });
 
 $app->run();

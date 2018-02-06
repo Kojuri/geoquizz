@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>GéoQuizz - API</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <header>
+            <div class="logo">
+                <h1>GéoQuizz</h1>
+                <h2>#API</h2>
+            </div>
+        </header>
+        <section>
+            <h2>#API</h2>
+            <h3>
+                <span class="verb"> POST</span>/public/start</h3>
+            <ul class="api-route">
+                <li>
+                    <strong>Description :</strong>&nbsp;Permet de démarrer la partie.</li>
+                <li>
+                    <strong>Params :</strong>&nbsp;{"joueur": ...}</li>
+                <li>
+                    <strong>Retourne :</strong>&nbsp;{"token": ...,"serie":{"id": ...,"lieu": ...,"lieu_longitude": ...,"lieu_latitude":
+                    ...,"zoom_carte": ...,"distance_calcul": ...},"photos":[{"id": ...,"desc": ...,"longitude": ...,"latitude":
+                    ...,"url": ...,"serie_id": ...}, ...]}</li>
+            </ul>
+            <h3>
+                <span class="verb">POST</span>/public/stop/<span class="tokenparam">?token=:token</span></h3>
+            <ul class="api-route">
+                <li>
+                    <strong>Description :</strong>&nbsp;Permet de mettre en pause la partie.</li>
+                <li>
+                    <strong>Params :</strong>&nbsp;{"score": ...}</li>
+            </ul>
+            <h3>
+                <span class="verb"> PUT</span>/public/play/
+                <span class="tokenparam">?token=:token</span>
+            </h3>
+            <ul class="api-route">
+                <li>
+                    <strong>Description :</strong>&nbsp;Permet de reprendre la partie.</li>
+                <li>
+                    <strong>Params :</strong>
+                    <em>&nbsp;Aucun paramètre supplémentaire requis</em>
+                </li>
+            </ul>
+            <h3>
+                <span class="verb">POST</span>/public/end/
+                <span class="tokenparam">?token=:token</span>
+            </h3>
+            <ul class="api-route">
+                <li>
+                    <strong>Description :</strong>&nbsp;Enregistre le score si demandé et termine la partie.</li>
+                <li>
+                    <strong>Params :</strong>&nbsp;{"score": ...}</li>
+            </ul>
+        </section>
+        <footer>
+            <p>LP CISIIE - Atelier 2 : GéoQuizz</p>
+        </footer>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Co'op</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <nav class="navbar is-primary">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <i class="fa fa-globe"></i>
+                    <b>Co'op</b>
+                </a>
+                <span class="navbar-burger burger" data-target="navbarMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </div>
+            <div id="navbarMenu" class="navbar-menu ">
+                <div class="navbar-end">
+                    <a href="#/channels" class="navbar-item router-link-exact-active router-link-active is-active">
+                        <i class="fa fa-comments"></i>
+                        Conversations</a>
+                    <a href="#/members" class="navbar-item">
+                        <i class="fa fa-users"></i>
+                        Membres
+                    </a>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            <i class="fa fa-user"></i>
+                            Kojuri
+                        </a>
+                        <div class="navbar-dropdown is-boxed">
+                            <a class="navbar-item">
+                                Se déconnecter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section coop-accueil">
+        <div class="panel">
+            <p class="panel-heading">
+                Membres (1 membre)
+            </p>
+            <p class="panel-block">
+                <span class="panel-icon">
+                    <i class="fa fa-user"></i>
+                </span>
+                <span class="panel-icon">
+                    <img src="https://www.gravatar.com/avatar/5ad9f9520583d11d9c2455dad167123b?d=https://api.adorable.io/avatars/150/gilles@sopress.net">
+                </span>
+                <b>Gilles FRANCOIS</b>
+                <span class="tag">gilles@sopress.net</span>
+                <a class="panel-icon">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </p>
+        </div>
+    </section>
+
+    <script>
+        (function () {
+            var burger = document.querySelector('.burger');
+            var menu = document.querySelector('#' + burger.dataset.target);
+            burger.addEventListener('click', function () {
+                burger.classList.toggle('is-active');
+                menu.classList.toggle('is-active');
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
