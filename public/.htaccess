@@ -11,7 +11,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteRule ^ slim-exemple.php [QSA,L]
 RewriteRule ^ index.php [QSA,L]
 
-RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
+<ifModule mod_headers.c>
+    Header set Access-Control-Allow-Origin: *
+</ifModule>
 
 #CGIPassAuth On

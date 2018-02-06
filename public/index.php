@@ -8,6 +8,8 @@ require '../src/handlers/exceptions.php';
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
+header("Access-Control-Allow-Origin: http://geoquizz.kojuri.com");
+
 $config = include('../src/config.php');
 
 $app = new \Slim\App(['settings'=> $config]);
@@ -23,13 +25,9 @@ $capsule->getContainer()->singleton(
   Illuminate\Contracts\Debug\ExceptionHandler::class,
   App\Exceptions\Handler::class
 );
+
 $app->get('/photos[/]', function($request, $response) {
     return $response->getBody()->write(Photo::all()->toJson());
-});
-
-$app->get('/token[/]', function($request, $response) {
-   
-    return $response->getBody()->write($token);
 });
 
 $app->post('/start[/]', function($request, $response, $args) {
@@ -57,6 +55,70 @@ $app->post('/start[/]', function($request, $response, $args) {
 
     $json = json_encode($rep);
     return $response->withStatus(201)->getBody()->write($json);
+});
+
+$app->post('/stop/{token}[/]', function($request, $response, $args) {
+    $token = $args['token'];
+    $partie = Partie::select()
+                ->where('token', '=', $token)
+                ->first();
+    if($partie){
+        if($partie->statut != 1){
+            return $response->withStatus(409);
+        }
+        else{
+            $partie->statut = 2;
+            $data = $request->getParsedBody();
+            $partie->score = $data['score'];
+            $partie->save();
+            return $response->withStatus(200);
+        }      
+    }
+    else{
+        return $response->withStatus(403);
+    }
+});
+
+$app->put('/play/{token}[/]', function($request, $response, $args) {
+    $token = $args['token'];
+    $partie = Partie::select()
+                ->where('token', '=', $token)
+                ->first();
+    if($partie){
+        if($partie->statut != 2){
+            return $response->withStatus(409);
+        }
+        else{
+            $partie->statut = 1;
+            $partie->save();
+            return $response->withStatus(200);
+        }      
+    }
+    else{
+        return $response->withStatus(403);
+    }
+});
+
+$app->post('/end/{token}[/]', function($request, $response, $args) {
+    $token = $args['token'];
+    $partie = Partie::select()
+                ->where('token', '=', $token)
+                ->first();
+    if($partie){
+        if($partie->statut != 1){
+            return $response->withStatus(409);
+        }
+        else{
+            $partie->statut = 3;
+            $data = $request->getParsedBody();
+            $partie->score = $data['score'];
+            $partie->save();
+            return $response->withStatus(200);
+        }      
+    }
+    else{
+        return $response->withStatus(403);
+    }
 });
 
 $app->run();
