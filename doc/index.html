@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body onload="alert('Bienvenue sur le site de notre API. Ce site contient toutes les informations concernant notre API, en clair, voici la DOC de notre API.')";>
+<body onload="alert('Bienvenue sur le site de notre API. Ce site contient toutes les informations concernant notre API, en clair, voici la DOC de notre API.')"
+    ;>
 
     <div id="wrapper">
         <header>
@@ -21,7 +22,8 @@
             </div>
         </header>
         <section>
-            <h2>#API - Documentation de l'API</h2><br>
+            <h2>#API - Documentation de l'API</h2>
+            <br>
             <h3>
                 <span class="verb"> POST</span>/public/start</h3>
             <ul class="api-route">
@@ -31,18 +33,36 @@
                     <strong>Params :</strong>&nbsp;{"joueur": ...}</li>
                 <li>
                     <strong>Retourne :</strong>&nbsp;{"token": ...,"serie":{"id": ...,"lieu": ...,"lieu_longitude": ...,"lieu_latitude":
-                    ...,"zoom_carte": ...,"distance_calcul": ...},"photos":[{"id": ...,"desc": ...,"longitude": ...,"latitude":
-                    ...,"url": ...,"serie_id": ...}, ...]}</li>
-            </ul><br>
-
+                    ...,"zoom_carte": ...,"distance_calcul": ...}}</li>
+            </ul>
+            <br>
             <h3>
-                <span class="verb">POST</span>/public/stop/<span class="tokenparam">?token=:token</span></h3>
+                <span class="verb"> GET</span>/public/start/
+                <span class="tokenparam">?token=:token</span>
+            </h3>
+            <ul class="api-route">
+                <li>
+                    <strong>Description :</strong>&nbsp;Permet de récupérer les photos de la partie.</li>
+                <li>
+                    <strong>Params :</strong>
+                    <em>&nbsp;Aucun paramètre supplémentaire requis</em>
+                </li>
+                <li>
+                    <strong>Retourne :</strong>&nbsp;{"photos":[{"id": ...,"desc": ...,"longitude": ...,"latitude": ...,"url": ...,"serie_id":
+                    ...}, ...]}</li>
+            </ul>
+            <br>
+            <h3>
+                <span class="verb">POST</span>/public/stop/
+                <span class="tokenparam">?token=:token</span>
+            </h3>
             <ul class="api-route">
                 <li>
                     <strong>Description :</strong>&nbsp;Permet de mettre en pause la partie.</li>
                 <li>
                     <strong>Params :</strong>&nbsp;{"score": ...}</li>
-            </ul><br>
+            </ul>
+            <br>
             <h3>
                 <span class="verb"> PUT</span>/public/play/
                 <span class="tokenparam">?token=:token</span>
@@ -54,7 +74,8 @@
                     <strong>Params :</strong>
                     <em>&nbsp;Aucun paramètre supplémentaire requis</em>
                 </li>
-            </ul><br>
+            </ul>
+            <br>
             <h3>
                 <span class="verb">POST</span>/public/end/
                 <span class="tokenparam">?token=:token</span>
@@ -70,7 +91,6 @@
             <p>LP CISIIE - Atelier 2 : GéoQuizz</p>
         </footer>
     </div>
-
 </body>
 
 </html>
