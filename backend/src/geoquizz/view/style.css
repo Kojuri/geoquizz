@@ -1,4 +1,6 @@
 nav .fa{
     margin-right: 5px;
 }
-
+label > .icon{
+    margin-left: 5px;
+}

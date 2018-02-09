@@ -21,14 +21,14 @@
 
 <div class="section">
   <div class="container">
-    <div class="columns">
-      <div class="column is-8">
-        <div class="title">Ajouter une série
+      <div class="title">Ajouter une série
         </div>
+    <div class="columns">
+      <div class="column is-6">     
         <div id="map"></div>
-        <section class="modal-card-body">
-
-          <form class="geo-ajouterSerie" action="addSerie" method="post">
+      </div>
+        <div class="column is-6">
+          <form class="geo-ajouterSerie" action="{{root}}/addSerie" method="post">
               {% if(error) %}
               <div class="has-text-danger is-danger">
                  {{error}}
@@ -48,7 +48,10 @@
             </div>
 
             <div class="field">
-              <label class="label">Longitude</label>
+              <label class="label">Longitude<span class="icon is-small is-right">
+                  <i class="fa fa-question-circle" title="Placez un point sur la carte pour mettre à jour la longitude"></i>
+                </span></label>
+              
               <div class="control has-icons-left has-icons-right">
                 <input class="input is-success" type="number" placeholder="" name="longitude" id="longitude" step="any">
                 <span class="icon is-small is-left">
@@ -58,9 +61,14 @@
                   <i class="fa fa-check"></i>
                 </span>
               </div>
+
+             
+
             </div>
             <div class="field">
-              <label class="label">Latitude</label>
+              <label class="label">Latitude<span class="icon is-small is-right">
+                  <i class="fa fa-question-circle" title="Placez un point sur la carte pour mettre à jour la latitude"></i>
+                </span></label>
               <div class="control has-icons-left has-icons-right">
                 <input class="input is-success" type="number" placeholder="" name="latitude" id="latitude" step="any">
                 <span class="icon is-small is-left">
@@ -73,7 +81,9 @@
             </div>
 
             <div class="field">
-                <label class="label">Niveau de zoom de la carte</label>
+                <label class="label">Niveau de zoom de la carte<span class="icon is-small is-right">
+                    <i class="fa fa-question-circle" title="Zoomez sur la carte pour mettre à jour le niveau de zoom"></i>
+                  </span></label>
                 <div class="control has-icons-left has-icons-right">
                   <input class="input is-success" type="number" placeholder="" name="zoom" id="zoom">
                   <span class="icon is-small is-left">
@@ -103,11 +113,10 @@
                   <button class="button is-link">Valider</button>
               </div>
               <div class="control">
-                  <a class="button is-text" href = "series">Annuler</a>
+                  <a class="button is-text" href = "{{root}}/series">Annuler</a>
               </div>
             </div>
           </form>
-        </section>
       </div>
     </div>
   </div>

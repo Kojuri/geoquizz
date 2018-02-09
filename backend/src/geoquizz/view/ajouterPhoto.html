@@ -17,18 +17,16 @@
     padding: 0;
   }
 </style>
-
-
 <div class="section">
   <div class="container">
-    <div class="columns">
-      <div class="column is-8">
-        <div class="title">Ajouter une photo au lieu : {{serie.lieu}}
+      <div class="title">Ajouter une photo au lieu : {{serie.lieu}}
         </div>
+    <div class="columns">     
+      <div class="column is-6">    
         <div id="map"></div>
-        <section class="modal-card-body">
-
-          <form class="geo-ajouterSerie" action="addSerie" method="post">
+        </div>
+        <div class="column is-6">
+          <form class="geo-ajouterSerie" action="{{root}}/addPhoto/{{serie.id}}" method="post">
               {% if(error) %}
               <div class="has-text-danger is-danger">
                  {{error}}
@@ -37,7 +35,7 @@
             <div class="field">
               <label class="label">Description</label>
               <div class="control has-icons-left has-icons-right">
-                <input class="input is-success" type="text" placeholder="Metz" name="lieu">
+                <input class="input is-success" type="text" placeholder="Cathédrale Saint-Etienne" name="desc">
                 <span class="icon is-small is-left">
                   <i class="fa fa-globe"></i>
                 </span>
@@ -46,7 +44,6 @@
                 </span>
               </div>
             </div>
-
             <div class="field">
               <label class="label">Longitude</label>
               <div class="control has-icons-left has-icons-right">
@@ -71,7 +68,6 @@
                 </span>
               </div>
             </div>
-
             <div class="field">
                 <label class="label">URL de la photo</label>
                 <div class="control has-icons-left has-icons-right">
@@ -84,19 +80,15 @@
                   </span>
                 </div>
               </div>
-
-            
-
             <div class="field is-grouped">
               <div class="control">
                   <button class="button is-link">Valider</button>
               </div>
               <div class="control">
-                  <a class="button is-text" href = "series">Annuler</a>
+                  <a class="button is-text" href = "{{root}}/serie/{{serie.id}}">Annuler</a>
               </div>
             </div>
           </form>
-        </section>
       </div>
     </div>
   </div>
@@ -110,13 +102,12 @@
   var markers = [];
   let longitude = document.querySelector("#longitude");
   let latitude = document.querySelector("#latitude");
-  let zoom = document.querySelector("#zoom");
 
   function initMap() {
-    var France = { lat: 46.227638, lng: 2.213749000000007 };
+    var France = { lat: {{serie.lieu_latitude}}, lng: {{serie.lieu_longitude }}};
 
     map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 6,
+      zoom: {{serie.zoom_carte}},
       center: France,
     });
     // This event listener will call addMarker() when the map is clicked.

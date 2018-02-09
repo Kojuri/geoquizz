@@ -49,10 +49,7 @@ $container['view'] = function ($container) {
     $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
     $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
     $root = dirname($_SERVER['SCRIPT_NAME'],1);
-
     $view->getEnvironment()->addGlobal("root", $root);
-
-
     return $view;
 };
 
@@ -133,7 +130,7 @@ $app->post('/login[/]', function($request, $response, $args) use ($app){
 });
 
 $app->get('/accueil[/]', function ($request, $response, $args) {
-    if(!is_null($_SESSION['mail']) and !is_null($_SESSION['user_login'])){
+    if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
         return $this->view->render($response, 'accueil.html', array(
             'pseudo' => $_SESSION['user_login'], 
             'mail' => $_SESSION['mail']
@@ -233,7 +230,7 @@ $app->get('/ajouterPhoto/{serie_id}[/]', function ($request, $response, $args) {
         return $this->view->render($response, 'ajouterPhoto.html', array(
             'pseudo' => $_SESSION['user_login'], 
             'mail' => $_SESSION['mail'],
-            'serie_id' => $serie
+            'serie' => $serie
             ));
     }
     else{
@@ -243,7 +240,41 @@ $app->get('/ajouterPhoto/{serie_id}[/]', function ($request, $response, $args) {
 });
 
    
-
+$app->post('/addPhoto/{serie_id}[/]', function($request, $response, $args) use ($app){
+    $serie_id = $args['serie_id'];
+    if(!is_null($_SESSION['mail']) and !is_null($_SESSION['user_login'])){
+        $data = $request->getParsedBody();
+        if(!empty($data['longitude']) and !empty($data['latitude']) and !empty($data['desc']) and !empty($data['url']))
+        {
+            $longitude = filter_var($data['longitude'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $latitude = filter_var($data['latitude'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $desc = filter_var($data['desc'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $url = filter_var($data['url'], FILTER_SANITIZE_SPECIAL_CHARS);
+            
+            $photo = new Photo();
+            $photo->desc = $desc;
+            $photo->longitude = $longitude;
+            $photo->latitude = $latitude;
+            $photo->url = $url;
+            $photo->serie_id = $serie_id;
+            $photo->save();
+            $root = dirname($_SERVER['SCRIPT_NAME'],1);
+            header("Location: ".$root."/serie/".$serie_id);
+            exit();
+        }
+        else{
+            $serie = Serie::find($serie_id); 
+            return $this->view->render($response, 'ajouterPhoto.html', [
+                'error' => 'Veuillez remplir tous les champs !',
+                'serie' => $serie
+            ]);
+        }
+    }
+    else{
+        header("Location: accueil");
+        exit();
+    }
+});
 
 // Catch-all route to serve a 404 Not Found page if none of the routes match
 // NOTE: make sure this route is defined last
