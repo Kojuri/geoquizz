@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <title>Mecado - Connexion</title>
+      <link rel='stylesheet'  href='menu.css'/>
+  </head>
+
+<header>
+  <body id="body">
+    <div id="bloc_page"> 
+      <nav id="navigation" role="navigation"> 
+        <input type="checkbox" id="toggle-nav" aria-label="open/close navigation">
+        <label for="toggle-nav" class="nav-button"></label>
+    <div class="nav-inner">
+      <ul class="GrilleMenu" id="menu">
+        <li><a href="index.html"><img src="images/logo3.png" class="img" href="#" alt="logo"></a></li>
+        <li><a href="index.html" title="Home">Accueil</a></li>
+        <li><a href="listes.html" title="Listes">Listes</a></li>
+        <li><a href="Inscription.html" title="FormInscription">Inscription</a></li>
+        <li><a href="Connexion.html" title="Connexion">Connexion</a></li>
+      </ul>
+    </div>
+      </nav>
+</header> 
+<form action="connexion.php" method="post">
+  <table class="form">
+    <caption class="tuto3">Veuillez vous connecter :</caption>
+    <tr>
+      <td><label for="login" class="text">Adresse mail :</label></td>
+      <td><input type="text" name="login" id="login"/></td>
+    </tr>
+    <tr>
+      <td><label for="pass" class="text">Mot de passe :</label></td>
+      <td><input type="password" name="pass" id="pass"/></td>
+    </tr>
+  </table>
+<input class="btn" type="submit" name="connexion" value="Connexion"/>
+</form>
+</body>
+
+<footer>
+  <p>Copyright &copy;2017 - Mecado</p>
+</footer>
+
+</html>

@@ -1,0 +1,171 @@
+{% extends "layout.html" %} {% block contenu %}
+
+<style>
+  /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
+  #map {
+    height: 100%;
+  }
+
+  /* Optional: Makes the sample page fill the window. */
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+
+<div class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-8">
+        <div class="title">Ajouter une photo au lieu : {{serie.lieu}}
+        </div>
+        <div id="map"></div>
+        <section class="modal-card-body">
+
+          <form class="geo-ajouterSerie" action="addSerie" method="post">
+              {% if(error) %}
+              <div class="has-text-danger is-danger">
+                 {{error}}
+                </div>
+                {% endif %}
+            <div class="field">
+              <label class="label">Description</label>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input is-success" type="text" placeholder="Metz" name="lieu">
+                <span class="icon is-small is-left">
+                  <i class="fa fa-globe"></i>
+                </span>
+                <span class="icon is-small is-right">
+                  <i class="fa fa-check"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Longitude</label>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input is-success" type="number" placeholder="" name="longitude" id="longitude" step="any">
+                <span class="icon is-small is-left">
+                  <i class="fa fa-map-marker"></i>
+                </span>
+                <span class="icon is-small is-right">
+                  <i class="fa fa-check"></i>
+                </span>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Latitude</label>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input is-success" type="number" placeholder="" name="latitude" id="latitude" step="any">
+                <span class="icon is-small is-left">
+                  <i class="fa fa-map-marker"></i>
+                </span>
+                <span class="icon is-small is-right">
+                  <i class="fa fa-check"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+                <label class="label">URL de la photo</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input is-success" type="text" placeholder="http://maphoto.fr" name="url" id="url">
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-link"></i>
+                  </span>
+                  <span class="icon is-small is-right">
+                    <i class="fa fa-check"></i>
+                  </span>
+                </div>
+              </div>
+
+            
+
+            <div class="field is-grouped">
+              <div class="control">
+                  <button class="button is-link">Valider</button>
+              </div>
+              <div class="control">
+                  <a class="button is-text" href = "series">Annuler</a>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+  // In the following example, markers appear when the user clicks on the map.
+  // The markers are stored in an array.
+  // The user can then click an option to hide, show or delete the markers.
+  var map;
+  var markers = [];
+  let longitude = document.querySelector("#longitude");
+  let latitude = document.querySelector("#latitude");
+  let zoom = document.querySelector("#zoom");
+
+  function initMap() {
+    var France = { lat: 46.227638, lng: 2.213749000000007 };
+
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 6,
+      center: France,
+    });
+    // This event listener will call addMarker() when the map is clicked.
+    map.addListener('click', function (event) {
+      deleteMarkers();
+      addMarker(event.latLng);
+      longitude.value = event.latLng.lng();
+      latitude.value = event.latLng.lat();
+      
+    });
+
+    // Adds a marker at the center of the map.
+    addMarker(France);
+  }
+
+  // Adds a marker to the map and push to the array.
+  function addMarker(location) {
+    var marker = new google.maps.Marker({
+      position: location,
+      map: map
+    });
+    markers.push(marker);
+  }
+
+  // Sets the map on all markers in the array.
+  function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
+  }
+
+  // Removes the markers from the map, but keeps them in the array.
+  function clearMarkers() {
+    setMapOnAll(null);
+  }
+
+  // Shows any markers currently in the array.
+  function showMarkers() {
+    setMapOnAll(map);
+  }
+
+  // Deletes all markers in the array by removing references to them.
+  function deleteMarkers() {
+    clearMarkers();
+    markers = [];
+  }
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJ0k7JI86ToLqXmzzdB2V_7hooW_wntx0&callback=initMap&language=fr&region=FR"
+  async defer>
+  </script> {% endblock %}

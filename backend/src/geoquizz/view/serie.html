@@ -1,0 +1,40 @@
+{% extends "layout.html" %} {% block contenu %}
+<div class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-8">
+          <div class="title">{{serie.lieu}}         
+               <div class="button is-full is-pulled-right">
+                  <span class="icon">
+                      <i class="fa fa-plus"></i>
+                  </span>
+                  <span>
+                      Ajouter une photo
+                  </span>
+              </div>
+          </div>        
+        </div>
+      </div>
+      <hr>
+      <div class="columns is-multiline" >
+        {% for photo in serie.photos %}
+        <div class="column is-4">
+          <div class="panel">
+            <p class="is-marginless">
+                <img src="{{photo.url}}" style="height:200px; width:auto">
+            </p>
+            <div class="panel-block">
+              <div class="columns">
+                <div class="column">
+                  <div class="panel-block-item"><i class="fa fa-map-marker"></i><a href="#">&nbsp;{{photo.desc}}</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
