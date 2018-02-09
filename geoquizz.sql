@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Client :  127.0.0.1
--- Généré le :  Mar 06 Février 2018 à 15:53
+-- Généré le :  Ven 09 Février 2018 à 17:33
 -- Version du serveur :  5.7.14
 -- Version de PHP :  7.0.10
 
@@ -63,7 +63,10 @@ INSERT INTO `partie` (`id`, `token`, `statut`, `joueur`, `score`, `serie_id`, `u
 (19, '425555d8-bd6f-4f7c-9e73-2c5b98df1ad5', 1, 'Thomas', 0, 1, '2018-02-06 09:56:04', '2018-02-06 09:56:04'),
 (20, 'fecb29bf-cdd4-407d-a749-fa757a51803c', 1, 'Thomas', 0, 1, '2018-02-06 10:02:31', '2018-02-06 10:02:31'),
 (21, '858ae1d6-fbd6-495a-91a6-e1b579e7f2a2', 3, 'Thomas', 79, 1, '2018-02-06 11:08:00', '2018-02-06 11:04:02'),
-(22, 'e7add762-3239-4def-a46f-d2c7316f990f', 1, 'coco', 0, 1, '2018-02-06 14:08:31', '2018-02-06 14:08:31');
+(22, 'e7add762-3239-4def-a46f-d2c7316f990f', 1, 'coco', 0, 1, '2018-02-06 14:08:31', '2018-02-06 14:08:31'),
+(23, '365462b8-6eff-4d39-b0ca-ffb71a8e00c1', 1, 'coco', 0, 1, '2018-02-08 15:14:55', '2018-02-08 15:14:55'),
+(24, '807494e5-2788-4aed-afdd-24589716a045', 1, 'coco', 0, 1, '2018-02-09 14:20:46', '2018-02-09 14:16:03'),
+(25, 'a1966c1d-ac6f-4ed5-9494-9729237c74c0', 0, 'coco', 0, 1, '2018-02-09 14:24:26', '2018-02-09 14:24:26');
 
 -- --------------------------------------------------------
 
@@ -85,7 +88,6 @@ CREATE TABLE `photo` (
 --
 
 INSERT INTO `photo` (`id`, `desc`, `longitude`, `latitude`, `url`, `serie_id`) VALUES
-(1, 'Place Stan', 234, 567, 'http:///Hhfrhrthe', 0),
 (2, 'Centre Pompidou', 6.1816762999999355, 49.10824059999999, 'http://www.pedagogie.ac-nantes.fr/medias/photo/pompidoumetz4x3_1394100049099.jpg?ID_FICHE=1409432037701', 1),
 (3, 'Gare de Metz', 6.177221300000042, 49.1098016, 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Gare_de_Metz_-_2014.JPG/1200px-Gare_de_Metz_-_2014.JPG', 1),
 (4, 'Stade Saint-Symphorien', 6.159414100000049, 49.1097781, 'http://www.thinkfoot.fr/ressources/stade/photos/53/650x500/photo-stade+saint-symphorien-531000.jpg', 1),
@@ -117,7 +119,40 @@ CREATE TABLE `serie` (
 --
 
 INSERT INTO `serie` (`id`, `lieu`, `lieu_longitude`, `lieu_latitude`, `zoom_carte`, `distance_calcul`) VALUES
-(1, 'Metz', 6.166667, 49.133333, 13, 100);
+(1, 'Metz', 6.166667, 49.133333, 13, 100),
+(4, 'er&#34;r', 3.961588516831398, 47.93897228247112, 6, 100),
+(5, 'rhr', 4.401041641831398, 47.465786493395655, 6, 100),
+(6, 'rhr', 4.401041641831398, 47.465786493395655, 6, 100);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `utilisateur`
+--
+
+CREATE TABLE `utilisateur` (
+  `id` int(11) NOT NULL,
+  `mail` varchar(250) NOT NULL,
+  `pseudo` varchar(250) NOT NULL,
+  `mdp` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id`, `mail`, `pseudo`, `mdp`) VALUES
+(1, 'coco@coco.fr', 'coco', '$2y$10$CMhCZ/XUazuneexVc/QZBeL74TUffaWRv0pkwHWRogUVPfmpBTtBC'),
+(2, 'toto@toto.fr', 'toto', '$2y$10$QQy2S/fDgEwfd7GuN/TaR.KFav1hpfwAbU7wIjF/K99DnHRwFuFjO'),
+(3, 'edege@dfg.fr', '12éé', '$2y$10$ca3BjLZEa8m0IsEdQtvku.hxxtddnQqJvRrnAndujva6NkYszacE2'),
+(4, 'thtr@rhdd.fr', 'gghh', '$2y$10$M3HigL1Dk0rMfzqgVo3Jze/6flJwDrmIDPEov4auLVQSi8nucF63K'),
+(5, 'grr@zeg.fr', 'fr', '$2y$10$ptBCBSfg2AWTfL97VJpi1OtzZ2gIK0QoHbKz9FWwFzvn93nLj0SQO'),
+(6, 'ddr@rje.fr', 'o', '$2y$10$MxL6FIT.NosyBwGiZIzfBudFmq1brLO59bFdE/caQbDfMZt5aPJNS'),
+(7, 'de@de.de', 'de', '$2y$10$8OjHHfVYa0eOf2BAK1NlfO/GbOHHsP...8/fG5XzaF2roevC64LwK'),
+(8, 'coco@coco.com', 'coco', '$2y$10$hAsHo4y/7LJBdfW8y/BhVetENxyY4xZK9Z5gj5ENe70J4whUP8Gj.'),
+(9, 'flo@lebg.fr', 'flodu57', '$2y$10$eJA7FnoHmQdPrRRrTH/K5.nGwQDldgEdyAEU6fi/P7oBh4PlEVjGO'),
+(10, 'toto@toto.com', 'toto', '$2y$10$Q0V69Zoo3Af/xXL9sRPWaOYIkMqZvXzgvhOTmn5b2DZhXt8AT3P9i'),
+(11, 'flo@flo.fr', 'flodu57', '$2y$10$ryD0QGa2ycgi7AbHnZXBku2aYTDfqTyPzSSkeHoGpTPPZb/vRw.4.');
 
 --
 -- Index pour les tables exportées
@@ -144,6 +179,12 @@ ALTER TABLE `serie`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT pour les tables exportées
 --
 
@@ -151,17 +192,22 @@ ALTER TABLE `serie`
 -- AUTO_INCREMENT pour la table `partie`
 --
 ALTER TABLE `partie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT pour la table `serie`
 --
 ALTER TABLE `serie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
