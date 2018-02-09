@@ -21,12 +21,12 @@
         <div class="column is-4">
           <div class="panel">
             <p class="is-marginless">
-                <img src="{{photo.url}}" style="height:200px; width:auto">
+                <a href = "{{photo.url}}" target="_blank"><img src="{{photo.url}}" style="height:200px; width:auto"></a>
             </p>
             <div class="panel-block">
               <div class="columns">
                 <div class="column">
-                  <div class="panel-block-item"><i class="fa fa-map-marker"></i><a href="#">&nbsp;{{photo.desc}}</a></div>
+                  <div class="panel-block-item"><i class="fa fa-map-marker"></i><a href="{{photo.url}}" target="_blank">&nbsp;{{photo.desc}}</a></div>
                 </div>
               </div>
             </div>

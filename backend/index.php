@@ -3,41 +3,24 @@ require '../vendor/autoload.php';
 require '../src/models/Photo.php'; 
 require '../src/models/Serie.php';
 require 'src/geoquizz/auth/GeoquizzAuthentification.php';
-//require 'src/geoquizz/model/Utilisateur.php';
 require '../src/handlers/exceptions.php';
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
 session_start();
-
 $config = include('../src/config.php');
-
 $app = new \Slim\App(['settings'=> $config]);
-
 $container = $app->getContainer();
 
 $capsule = new \Illuminate\Database\Capsule\Manager;
 $capsule->addConnection($container['settings']['db']);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
-
 $capsule->getContainer()->singleton(
   Illuminate\Contracts\Debug\ExceptionHandler::class,
   App\Exceptions\Handler::class
 );
-
-$app->options('/{routes:.+}', function ($request, $response, $args) {
-    return $response;
-});
-
-$app->add(function ($req, $res, $next) {
-    $response = $next($req, $res);
-    return $response
-            ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-});
 
 // Register component on container
 $container['view'] = function ($container) {
@@ -50,16 +33,25 @@ $container['view'] = function ($container) {
     $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
     $root = dirname($_SERVER['SCRIPT_NAME'],1);
     $view->getEnvironment()->addGlobal("root", $root);
+    
+    // Variables globales twig avec le mail et le pseudo de l'utilisateur connecté
+    if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
+        $view->getEnvironment()->addGlobal("mail", $_SESSION['mail']);
+        $view->getEnvironment()->addGlobal("pseudo", $_SESSION['user_login']);
+    }
+
     return $view;
 };
 
+// Document root de l'application utilisé pour les redirections
+$app->root = dirname($_SERVER['SCRIPT_NAME'],1);
 
-
-// Render Twig template in route
+// Route affichant le formulaire d'inscription
 $app->get('/inscription[/]', function ($request, $response, $args) {
     return $this->view->render($response, 'inscription.html', $args);
 });
 
+// Route validant l'inscription
 $app->post('/register[/]', function($request, $response, $args) use ($app){
     $data = $request->getParsedBody();
     if(!empty($data['pseudo']) and !empty($data['mail']) and !empty($data['mdp'])and !empty($data['remdp']))
@@ -74,7 +66,7 @@ $app->post('/register[/]', function($request, $response, $args) use ($app){
             $co = $auth->createUtilisateur($pseudo, $mdp, $mail);
             if(empty($co))
             {                
-               header("Location: connexion");
+               header("Location: ".$app->root."/connexion");
                exit();
             }
             else
@@ -98,10 +90,12 @@ $app->post('/register[/]', function($request, $response, $args) use ($app){
     }
 });
 
+// Route affichant le formulaire de connexion
 $app->get('/connexion[/]', function ($request, $response, $args) {
     return $this->view->render($response, 'connexion.html', $args);
 });
 
+// Route validant la connexion
 $app->post('/login[/]', function($request, $response, $args) use ($app){
     $data = $request->getParsedBody();
     if(!empty($data['mail']) and !empty($data['mdp']))
@@ -112,7 +106,7 @@ $app->post('/login[/]', function($request, $response, $args) use ($app){
         $co = $auth->login($mail, $mdp);
         if(empty($co))
         {
-            header("Location: accueil");
+            header("Location: ".$app->root."/accueil");
             exit();
         }
         else
@@ -129,70 +123,66 @@ $app->post('/login[/]', function($request, $response, $args) use ($app){
     }
 });
 
+// Route affichant la page d'accueil de l'application backend
 $app->get('/accueil[/]', function ($request, $response, $args) {
     if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
-        return $this->view->render($response, 'accueil.html', array(
-            'pseudo' => $_SESSION['user_login'], 
-            'mail' => $_SESSION['mail']
-            ));
+        return $this->view->render($response, 'accueil.html');
     }
     else{
         return $this->view->render($response, 'connexion.html');
     }
 });
 
-$app->get('/deconnexion[/]', function ($request, $response, $args) {
+// Route permettant de se déconnecter
+$app->get('/deconnexion[/]', function ($request, $response, $args) use ($app){
     $auth = new GeoquizzAuthentification();
     $auth->deconnexion();
-    header("Location: accueil");
+    header("Location: ".$app->root."/accueil");
     exit();
 });
 
-$app->get('/series[/]', function ($request, $response, $args) {
+// Route affichant la liste des séries
+$app->get('/series[/]', function ($request, $response, $args) use ($app){
     $lesSeries = Serie::all();
-    if(!is_null($_SESSION['mail']) and !is_null($_SESSION['user_login'])){
+    if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
         return $this->view->render($response, 'series.html', array(
-            'pseudo' => $_SESSION['user_login'], 
-            'mail' => $_SESSION['mail'],
             'series' => $lesSeries
             ));
     }
     else{
-        header("Location: accueil");
+        header("Location: ".$app->root."/accueil");
         exit();
     }
 });
 
-$app->get('/serie/{id}[/]', function ($request, $response, $args) {
+// Route affichant une série et ses photos
+$app->get('/serie/{id}[/]', function ($request, $response, $args) use ($app){
     $uneSerie = Serie::find($args['id']);
-    if(!is_null($_SESSION['mail']) and !is_null($_SESSION['user_login'])){
+    if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
         return $this->view->render($response, 'serie.html', array(
-            'pseudo' => $_SESSION['user_login'], 
-            'mail' => $_SESSION['mail'],
             'serie' => $uneSerie
             ));
     }
     else{
-        header("Location: accueil");
+        header("Location: ".$app->root."/accueil");
         exit();
     }
 });
 
-$app->get('/ajouterSerie[/]', function ($request, $response, $args) {
-    if(!is_null($_SESSION['mail']) and !is_null($_SESSION['user_login'])){
-        return $this->view->render($response, 'ajouterSerie.html', array(
-            'pseudo' => $_SESSION['user_login'], 
-            'mail' => $_SESSION['mail'],
-            ));
+// Route affichant le formulaire d'ajout d'une série
+$app->get('/ajouterSerie[/]', function ($request, $response, $args) use($app){
+    if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
+        return $this->view->render($response, 'ajouterSerie.html');
     }
     else{
-        header("Location: accueil");
+        header("Location: ".$app->root."/accueil");
         exit();
     }
 });
 
+// Route validant l'ajout d'une série
 $app->post('/addSerie[/]', function($request, $response, $args) use ($app){
-    if(!is_null($_SESSION['mail']) and !is_null($_SESSION['user_login'])){
+    if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
         $data = $request->getParsedBody();
         if(!empty($data['longitude']) and !empty($data['latitude']) and !empty($data['lieu']) and !empty($data['zoom']) and !empty($data['dist']))
         {
@@ -210,7 +200,7 @@ $app->post('/addSerie[/]', function($request, $response, $args) use ($app){
             $serie->distance_calcul = $dist;
             $serie->save();
 
-            header("Location: serie/".$serie->id);
+            header("Location: ".$app->root."/serie/".$serie->id);
             exit();
         }
         else{
@@ -220,29 +210,29 @@ $app->post('/addSerie[/]', function($request, $response, $args) use ($app){
         }
     }
     else{
-        header("Location: accueil");
-        exit();
-    }
-});
-$app->get('/ajouterPhoto/{serie_id}[/]', function ($request, $response, $args) {
-    if(!is_null($_SESSION['mail']) and !is_null($_SESSION['user_login'])){   
-        $serie = Serie::find($args['serie_id']); 
-        return $this->view->render($response, 'ajouterPhoto.html', array(
-            'pseudo' => $_SESSION['user_login'], 
-            'mail' => $_SESSION['mail'],
-            'serie' => $serie
-            ));
-    }
-    else{
-        header("Location: accueil");
+        header("Location: ".$app->root."/accueil");
         exit();
     }
 });
 
-   
+// Route affichant le formulaire d'ajout d'une photo à une série
+$app->get('/ajouterPhoto/{serie_id}[/]', function ($request, $response, $args) use($app){
+    if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){  
+        $serie = Serie::find($args['serie_id']); 
+        return $this->view->render($response, 'ajouterPhoto.html', array(
+            'serie' => $serie
+            ));
+    }
+    else{
+        header("Location: ".$app->root."/accueil");
+        exit();
+    }
+});
+
+// Route validant l'ajout d'une photo à une série
 $app->post('/addPhoto/{serie_id}[/]', function($request, $response, $args) use ($app){
     $serie_id = $args['serie_id'];
-    if(!is_null($_SESSION['mail']) and !is_null($_SESSION['user_login'])){
+    if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
         $data = $request->getParsedBody();
         if(!empty($data['longitude']) and !empty($data['latitude']) and !empty($data['desc']) and !empty($data['url']))
         {
@@ -258,8 +248,8 @@ $app->post('/addPhoto/{serie_id}[/]', function($request, $response, $args) use (
             $photo->url = $url;
             $photo->serie_id = $serie_id;
             $photo->save();
-            $root = dirname($_SERVER['SCRIPT_NAME'],1);
-            header("Location: ".$root."/serie/".$serie_id);
+
+            header("Location: ".$app->root."/serie/".$serie_id);
             exit();
         }
         else{
@@ -271,16 +261,10 @@ $app->post('/addPhoto/{serie_id}[/]', function($request, $response, $args) use (
         }
     }
     else{
-        header("Location: accueil");
+        header("Location: ".$app->root."/accueil");
         exit();
     }
 });
 
-// Catch-all route to serve a 404 Not Found page if none of the routes match
-// NOTE: make sure this route is defined last
-$app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
-    $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
-    return $handler($req, $res);
-});
-
+// Lance l'application
 $app->run();

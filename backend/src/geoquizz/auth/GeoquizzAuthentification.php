@@ -1,7 +1,7 @@
 <?php
 
-require 'src\geoquizz\model\Utilisateur.php';
-require 'src\mf\auth\Authentification.php';
+require 'src/geoquizz/model/Utilisateur.php';
+require 'src/mf/auth/Authentification.php';
 
 
 class GeoquizzAuthentification extends \mf\auth\Authentification {

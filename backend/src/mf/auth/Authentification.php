@@ -1,6 +1,6 @@
 <?php
 namespace mf\auth;
-require 'src\mf\auth\AbstractAuthentification.php';
+require 'src/mf/auth/AbstractAuthentification.php';
 class Authentification extends AbstractAuthentification{
 
 	public function __construct(){
@@ -17,7 +17,6 @@ class Authentification extends AbstractAuthentification{
 		$this->user_login=$username;
 		$_SESSION['user_login']=$username;
 		$_SESSION['mail']=$mail;
-		echo $_SESSION['mail'];
 		$this->logged_in=true;
 	}
 
