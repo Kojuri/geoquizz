@@ -124,7 +124,7 @@ $app->post('/login[/]', function($request, $response, $args) use ($app){
 });
 
 // Route affichant la page d'accueil de l'application backend
-$app->get('/accueil[/]', function ($request, $response, $args) {
+$app->get('/[accueil]', function ($request, $response, $args) {
     if(isset($_SESSION['mail']) and isset($_SESSION['user_login'])){
         return $this->view->render($response, 'accueil.html');
     }
