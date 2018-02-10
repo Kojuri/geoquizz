@@ -347,6 +347,14 @@ h3 span.verb {
 	margin-right: 10px
 }
 
+h3 span.info {
+	background-color: cadetblue;
+	color: white;
+	padding: 1px 3px;
+	border-radius: 3px;
+	margin-right: 10px
+}
+
 h3 span.tokenparam {
 	color: #EB3344
 }
