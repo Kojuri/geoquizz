@@ -1,3 +1,8 @@
+Le backend de l'application GéoQuizz est accessible ici : http://geoquizz.kojuri.com/backend/
+
+La documentation en ligne de l'API est disponible ici : http://geoquizz.kojuri.com/doc/
+
+
 #API GéoQuizz
 
 
