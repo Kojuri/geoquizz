@@ -4,11 +4,14 @@ require '../src/models/Photo.php';
 require '../src/models/Partie.php';
 require '../src/models/Serie.php';
 require '../src/handlers/exceptions.php';
+
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+
 $config = include('../src/config.php');
 $app = new \Slim\App(['settings'=> $config]);
 $container = $app->getContainer();
+
 $capsule = new \Illuminate\Database\Capsule\Manager;
 $capsule->addConnection($container['settings']['db']);
 $capsule->setAsGlobal();
@@ -17,9 +20,11 @@ $capsule->getContainer()->singleton(
   Illuminate\Contracts\Debug\ExceptionHandler::class,
   App\Exceptions\Handler::class
 );
+
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
 });
+
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
@@ -27,6 +32,8 @@ $app->add(function ($req, $res, $next) {
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
+
+// Route qui initie la partie, retourne le token et les infos sur la série
 $app->post('/start[/]', function($request, $response, $args) {
     $data = $request->getParsedBody();
     $partie = new Partie();
@@ -45,46 +52,8 @@ $app->post('/start[/]', function($request, $response, $args) {
     $json = json_encode($rep);
     return $response->withStatus(201)->getBody()->write($json);
 });
-$app->post('/stop/{token}[/]', function($request, $response, $args) {
-    $token = $args['token'];
-    $partie = Partie::select()
-                ->where('token', '=', $token)
-                ->first();
-    if($partie){
-        if($partie->statut != 1){
-            return $response->withStatus(409);
-        }
-        else{
-            $partie->statut = 2;
-            $data = $request->getParsedBody();
-            $partie->score = $data['score'];
-            $partie->save();
-            return $response->withStatus(200);
-        }      
-    }
-    else{
-        return $response->withStatus(403);
-    }
-});
-$app->put('/play/{token}[/]', function($request, $response, $args) {
-    $token = $args['token'];
-    $partie = Partie::select()
-                ->where('token', '=', $token)
-                ->first();
-    if($partie){
-        if($partie->statut != 2){
-            return $response->withStatus(409);
-        }
-        else{
-            $partie->statut = 1;
-            $partie->save();
-            return $response->withStatus(200);
-        }      
-    }
-    else{
-        return $response->withStatus(403);
-    }
-});
+
+// Route qui démarre la partie et retourne les photos de celle-ci
 $app->get('/start/{token}[/]', function($request, $response, $args) {
     $token = $args['token'];
     $partie = Partie::select()
@@ -110,6 +79,52 @@ $app->get('/start/{token}[/]', function($request, $response, $args) {
         return $response->withStatus(403);
     }
 });
+
+// Route qui met en pause la partie et enregistre le score actuel
+$app->post('/stop/{token}[/]', function($request, $response, $args) {
+    $token = $args['token'];
+    $partie = Partie::select()
+                ->where('token', '=', $token)
+                ->first();
+    if($partie){
+        if($partie->statut != 1){
+            return $response->withStatus(409);
+        }
+        else{
+            $partie->statut = 2;
+            $data = $request->getParsedBody();
+            $partie->score = $data['score'];
+            $partie->save();
+            return $response->withStatus(200);
+        }      
+    }
+    else{
+        return $response->withStatus(403);
+    }
+});
+
+// Route qui reprend la partie mise en pause
+$app->put('/play/{token}[/]', function($request, $response, $args) {
+    $token = $args['token'];
+    $partie = Partie::select()
+                ->where('token', '=', $token)
+                ->first();
+    if($partie){
+        if($partie->statut != 2){
+            return $response->withStatus(409);
+        }
+        else{
+            $partie->statut = 1;
+            $partie->save();
+            return $response->withStatus(200);
+        }      
+    }
+    else{
+        return $response->withStatus(403);
+    }
+});
+
+// Route qui termine la partie et enregistre le score 
 $app->post('/end/{token}[/]', function($request, $response, $args) {
     $token = $args['token'];
     $partie = Partie::select()
@@ -131,10 +146,13 @@ $app->post('/end/{token}[/]', function($request, $response, $args) {
         return $response->withStatus(403);
     }
 });
+
 // Catch-all route to serve a 404 Not Found page if none of the routes match
 // NOTE: make sure this route is defined last
 $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
     $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
     return $handler($req, $res);
 });
+
+// Lance l'application
 $app->run();
